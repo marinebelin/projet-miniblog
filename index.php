@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Clean Blog</title>
+    <title>Miniblog de Marine</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -42,14 +42,14 @@
                     <span class="sr-only">Toggle navigation</span>
                     Menu <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand" href="index.html">Le miniblog de Marine</a>
+                <a class="navbar-brand" href="index.php">Le miniblog de Marine</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="index.html">Accueil</a>
+                        <a href="index.php">Accueil</a>
                     </li>
                     <li>
                         <a href="about.html">A propos</a>
@@ -95,7 +95,7 @@
 
                 try {
                     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
-                    $stmt = $conn->prepare("select * from articles"); 
+                    $stmt = $conn->prepare("select * from articles ORDER BY id DESC"); 
                     $stmt->execute();
                     $billets = $stmt->fetchAll();
                 }
@@ -115,7 +115,7 @@
          <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-preview">
-                    <a href="post.php">
+                    <a href="post.php?id=<?=$billet['id']?>">
                         <h2 class="post-title">
                             <?= $billet['titre'] ?>
                         </h2>
