@@ -1,4 +1,13 @@
-<?php session_start() ?>
+<?php
+    
+    if(empty($_GET['id'])){
+        
+        header('Location: http://vesoul.codeur.online/front/bmarine/miniblog/index.php');
+        exit();
+        
+    };
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -10,16 +19,16 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Miniblog de Marine</title>
+    <title>Miniblog de Marine - <?= $billet['titre'] ?> </title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Theme CSS -->
-    <link href="css/clean-blog.min.css" rel="stylesheet">
+    <link href="../css/clean-blog.min.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
 
@@ -34,12 +43,7 @@
 
 <body>
 
-    <?php
-        require_once "admin/database.php";
-    ?>
-   
-    <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+  <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header page-scroll">
@@ -51,19 +55,16 @@
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="index.php">Accueil</a>
+                        <a href="indexadmin.php">Accueil administrateur</a>
                     </li>
+                     <li>
+                        <a href="newarticle.php">Nouvel article</a>
+                    </li> 
                     <li>
-                        <a href="about.html">A propos</a>
-                    </li>
-                    <!-- <li>
-                        <a href="post.html">Sample Post</a>
-                    </li> -->
-                    <li>
-                        <a href="admin/login.php">Connexion</a>
+                        <a href="deconnect.php">Deconnexion</a>
                     </li>
                 </ul>
             </div>
@@ -72,76 +73,19 @@
         <!-- /.container -->
     </nav>
 
-    <!-- Page Header -->
-    <!-- Set your background image for this header on the line below. -->
-    <header class="intro-header" style="background-image: url('img/home-bg.jpg')">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <div class="site-heading">
-                        <h1>Le miniblog de Marine</h1>
-                        <hr class="small">
-                        <span class="subheading">Projet réalisé lors de ma formation.</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <div class="container">
-           
     <?php
-        //connection admin database
-        $req = $db->query("select * from loginblog");
-        $user = $req->fetch();
-        
-        // Fonction pour afficher l'heure
-        function dt($datetime, $full = false) {
-            $now = new DateTime;
-            $ago = new DateTime($datetime);
-            $diff = $now->diff($ago);
-
-            $diff->w = floor($diff->d / 7);
-            $diff->d -= $diff->w * 7;
-
-            $string = array(
-                'y' => 'année',
-                'm' => 'mois',
-                'w' => 'semaine',
-                'd' => 'jour',
-                'h' => 'heure',
-                'i' => 'minute',
-                's' => 'seconde',
-            );
-            foreach ($string as $k => &$v) {
-
-                    if ($diff->$k) {
-                        if($k=="m"){
-                            $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? '' : '');
-                        }else{
-                            $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
-                        }
-                    } else {
-                        unset($string[$k]);
-                    }
-
-            }
-
-            if (!$full) $string = array_slice($string, 0, 1);
-            return $string ? " il y a ".implode(', ', $string) : 'just now';
-        }  
-
                 $servername = "localhost";
                 $username = "bmarine";
                 $password = "bmarine@2017";
                 $dbname = "bmarine";
+        
+                $id = $_GET['id'];
 
                 try {
                     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
-                    $stmt = $conn->prepare("select * from articles ORDER BY id DESC"); 
+                    $stmt = $conn->prepare("select * from articles where id=$id"); 
                     $stmt->execute();
-                    $billets = $stmt->fetchAll();
+                    $article = $stmt->fetch();
                 }
         
             
@@ -149,41 +93,40 @@
                     {
                      $error["bdd"] =  "Error: " . $e->getMessage();
                     }
-        
-                foreach ($billets as $billet): 
-    ?>
+            ?>
+   
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('../imgpost/<?= $article["image"]?>')">
+        <div class="container">
             
-          
-
-        
-         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="post-preview">
-                    <a href="post.php?id=<?=$billet['id']?>">
-                        <h2 class="post-title">
-                            <?= $billet['titre'] ?>
-                        </h2>
-                        <h3 class="post-subtitle">
-                           <?= $billet['soustitre'] ?>
-                        </h3>
-                    </a>
-                    <p class="post-meta">Publié par <?= $billet['auteur'];
-                       echo dt($billet['date']) ?></p>
+           
+           
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div class="post-heading">
+                        <h1><?= $article["titre"]?></h1>
+                        <h2 class="subheading"><?= $article["soustitre"]?></h2>
+                        <span class="meta">Publié par <?= $article["auteur"]?> le <?= $article["date"]?></span>
+                    </div>
                 </div>
-             </div>
+            </div>
         </div>
-        <hr>
-        <?php endforeach; ?>
-               
-                
-<!--     BOUTON ARTICLES PRECEDENTS -->
-                
-<!--    <ul class="pager">
-            <li class="next">
-                <a href="#">Plus anciens &rarr;</a>
-            </li>
-        </ul>-->
-    </div>
+    </header>
+
+    <!-- Post Content -->
+    <article>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                 
+                 <p><?= $article["contenu"]?></p>
+                  
+                </div>
+            </div>
+        </div>
+    </article>
+
     <hr>
 
     <!-- Footer -->
@@ -224,17 +167,17 @@
     </footer>
 
     <!-- jQuery -->
-    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="../vendor/jquery/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
 
     <!-- Contact Form JavaScript -->
-    <script src="js/jqBootstrapValidation.js"></script>
-    <script src="js/contact_me.js"></script>
+    <script src="../js/jqBootstrapValidation.js"></script>
+    <script src="../js/contact_me.js"></script>
 
     <!-- Theme JavaScript -->
-    <script src="js/clean-blog.min.js"></script>
+    <script src="../js/clean-blog.min.js"></script>
 
 </body>
 

@@ -67,7 +67,7 @@
                         <a href="post.html">Sample Post</a>
                     </li> -->
                     <li>
-                        <a href="contact.html">Contact</a>
+                        <a href="admin/login.php">Connexion</a>
                     </li>
                 </ul>
             </div>
@@ -75,13 +75,8 @@
         </div>
         <!-- /.container -->
     </nav>
-
-    <!-- Page Header -->
-    <!-- Set your background image for this header on the line below. -->
-    <header class="intro-header" style="background-image: url('img/post-bg.jpg')">
-        <div class="container">
-            
-            <?php
+    
+     <?php
                 $servername = "localhost";
                 $username = "bmarine";
                 $password = "bmarine@2017";
@@ -93,8 +88,7 @@
                     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
                     $stmt = $conn->prepare("select * from articles where id=$id"); 
                     $stmt->execute();
-                    $article = $stmt->fetchAll();
-                    print_r($article[0]["titre"]);
+                    $article = $stmt->fetch();
                 }
         
             
@@ -103,13 +97,18 @@
                      $error["bdd"] =  "Error: " . $e->getMessage();
                     }
             ?>
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    <header class="intro-header" style="background-image: url('imgpost/<?= $article["image"]?>')">
+        <div class="container">
            
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="post-heading">
-                        <h1><?= $article[0]["titre"]?></h1>
-                        <h2 class="subheading"><?= $article[0]["soustitre"]?></h2>
-                        <span class="meta">Publié par <?= $article[0]["auteur"]?> le <?= $article[0]["date"]?></span>
+                        <h1><?= $article["titre"]?></h1>
+                        <h2 class="subheading"><?= $article["soustitre"]?></h2>
+                        <span class="meta">Publié par <?= $article["auteur"]?> le <?= $article["date"]?></span>
                     </div>
                 </div>
             </div>
@@ -122,7 +121,7 @@
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                  
-                 <p><?= $article[0]["contenu"]?></p>
+                 <p><?= $article["contenu"]?></p>
                   
                 </div>
             </div>

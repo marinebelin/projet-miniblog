@@ -13,13 +13,13 @@
     <title>Miniblog de Marine</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Theme CSS -->
-    <link href="css/clean-blog.min.css" rel="stylesheet">
+    <link href="../css/clean-blog.min.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
 
@@ -35,7 +35,15 @@
 <body>
 
     <?php
-        require_once "admin/database.php";
+        require_once "database.php";
+        //connection admin database
+        $req = $db->query("select * from loginblog");
+        $user = $req->fetch();
+    
+        if(!$_SESSION['marine']){
+            header('Location: login.php');
+            exit();
+        }
     ?>
    
     <!-- Navigation -->
@@ -47,23 +55,19 @@
                     <span class="sr-only">Toggle navigation</span>
                     Menu <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand" href="index.php">Le miniblog de Marine</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="index.php">Accueil</a>
+                        <a href="indexadmin.php">Accueil administrateur</a>
                     </li>
+                     <li>
+                        <a href="newarticle.php">Nouvel article</a>
+                    </li> 
                     <li>
-                        <a href="about.html">A propos</a>
-                    </li>
-                    <!-- <li>
-                        <a href="post.html">Sample Post</a>
-                    </li> -->
-                    <li>
-                        <a href="admin/login.php">Connexion</a>
+                        <a href="deconnect.php">Deconnexion</a>
                     </li>
                 </ul>
             </div>
@@ -74,14 +78,14 @@
 
     <!-- Page Header -->
     <!-- Set your background image for this header on the line below. -->
-    <header class="intro-header" style="background-image: url('img/home-bg.jpg')">
+    <header class="intro-header" style="background-image: url('../img/home-bg.jpg')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                     <div class="site-heading">
-                        <h1>Le miniblog de Marine</h1>
+                        <h1>Tableau de bord</h1>
                         <hr class="small">
-                        <span class="subheading">Projet réalisé lors de ma formation.</span>
+                        <span class="subheading">Le miniblog de Marine</span>
                     </div>
                 </div>
             </div>
@@ -90,6 +94,7 @@
 
     <!-- Main Content -->
     <div class="container">
+          <h1>Les derniers articles</h1>
            
     <?php
         //connection admin database
@@ -153,13 +158,11 @@
                 foreach ($billets as $billet): 
     ?>
             
-          
-
         
          <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                 <div class="post-preview">
-                    <a href="post.php?id=<?=$billet['id']?>">
+                    <a href="affichearticle.php?id=<?=$billet['id']?>">
                         <h2 class="post-title">
                             <?= $billet['titre'] ?>
                         </h2>
@@ -176,13 +179,6 @@
         <?php endforeach; ?>
                
                 
-<!--     BOUTON ARTICLES PRECEDENTS -->
-                
-<!--    <ul class="pager">
-            <li class="next">
-                <a href="#">Plus anciens &rarr;</a>
-            </li>
-        </ul>-->
     </div>
     <hr>
 
@@ -224,17 +220,17 @@
     </footer>
 
     <!-- jQuery -->
-    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="../vendor/jquery/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
 
     <!-- Contact Form JavaScript -->
-    <script src="js/jqBootstrapValidation.js"></script>
-    <script src="js/contact_me.js"></script>
+    <script src="../js/jqBootstrapValidation.js"></script>
+    <script src="../js/contact_me.js"></script>
 
     <!-- Theme JavaScript -->
-    <script src="js/clean-blog.min.js"></script>
+    <script src="../js/clean-blog.min.js"></script>
 
 </body>
 
